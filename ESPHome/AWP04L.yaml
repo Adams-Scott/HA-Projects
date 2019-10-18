@@ -1,0 +1,84 @@
+# Basic config 
+# esphome config for tuya devices labeled awp04l
+# Do a search and replace for "Rename_Me" to name your device
+#
+# Most of this code is stolen from:
+#   https://github.com/arendst/Sonoff-Tasmota/issues/5594
+#   https://blog.quindorian.org/2019/02/home-assistant-10-wifi-energy-meter-with-esphome.html/
+
+esphome:
+  name: Rename_Me
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  ssid: #EnterMe
+  password: #EnterMe
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: #EnterMe
+
+ota:
+  password: #EnterMe
+
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+    
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO13
+      inverted: True
+    name: "Rename_Me_button"
+    
+    
+switch:
+- platform: gpio
+  name: "Rename_Me_Relay"
+  pin: GPIO12
+  restore_mode: ALWAYS_ON
+- platform: gpio
+  name: "Rename_Me_LED_Blue"
+  pin: GPIO15
+  inverted: True
+  restore_mode: ALWAYS_OFF
+- platform: gpio
+  name: "Rename_Me_LED_Red"
+  pin: GPIO00
+  inverted: True
+  restore_mode: ALWAYS_OFF
+sensor:
+  - platform: hlw8012
+    sel_pin:
+      number: GPIO03
+      inverted: True
+    cf_pin: GPIO05
+    cf1_pin: GPIO14
+    # Higher value gives lower watt readout
+    current_resistor: 0.00221
+    # Lower value gives lower voltage readout
+    voltage_divider: 871
+    current:
+      name: "Rename_Me_Amperage"
+      unit_of_measurement: A
+    voltage:
+      name: "Rename_Me_Voltage"
+      unit_of_measurement: V
+    power:
+      name: "Rename_Me_Wattage"
+      unit_of_measurement: W
+      id: "Rename_Me_Wattage"
+    change_mode_every: 8
+    update_interval: 10s
+  - platform: total_daily_energy
+    name: "Rename_Me_Total Daily Energy"
+    power_id: "Rename_Me_Wattage"
+    filters:
+      # Multiplication factor from W to kW is 0.001
+        - multiply: 0.001
+    unit_of_measurement: kWh
